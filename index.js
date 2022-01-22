@@ -4,6 +4,7 @@ const app = express()
 const cors = require('cors')
 const  ProductsController = require('./products/ProductsController')
 
+
 connection 
     .authenticate()
     .then(_ => console.log('Conexao bem sucedida'))
