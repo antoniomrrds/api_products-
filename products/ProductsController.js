@@ -13,8 +13,7 @@ router.get('/products', async (req, res) => {
         if (product == null || product.length == 0 ) {
             res.sendStatus(404)
         } else {
-            res.statusCode = 200;
-            res.json(product)
+            res.status(200).json(product)
         }
     } catch (err) {
         res.sendStatus(500);
@@ -33,8 +32,7 @@ router.get('/product/:id', async (req, res) => {
             if (productId == null) {
                 res.sendStatus(404)
             } else {
-                res.statusCode = 200;
-                res.json(productId);
+                res.status(200).json(productId);
             }
         } catch (err) {
             res.sendStatus(500)
@@ -46,7 +44,7 @@ router.get('/product/:id', async (req, res) => {
 router.post('/product', async (req, res) => {
     const { nome_produto, fabricante, quantidade_estoque, valor } = req.body;
 
-    const product = {
+    let product = {
         nome_produto: nome_produto,
         fabricante: fabricante,
         quantidade_estoque: quantidade_estoque,
@@ -60,14 +58,10 @@ router.post('/product', async (req, res) => {
             res.sendStatus(400);
         } else {
             try {
-                const product = await Products.create({
-                    nome_produto: nome_produto,
-                    fabricante: fabricante,
-                    quantidade_estoque: quantidade_estoque,
-                    valor: valor
-                })
+                const products = await Products.create(product);
                 res.sendStatus(201)
             } catch (err) {
+                console.log(err)
                 res.sendStatus(500)
             }
         }
@@ -106,12 +100,7 @@ router.put('/product/:id', async (req, res) => {
                     res.sendStatus(400)
                 } else {
                     try {
-                        const editProduct = await Products.update({
-                            nome_produto: nome_produto,
-                            fabricante: fabricante,
-                            quantidade_estoque: quantidade_estoque,
-                            valor: valor
-                        }, { where: { id: id } });
+                        const editProduct = await Products.update(product, { where: { id: id } });
                         res.sendStatus(200);
                     } catch (err) {
                         res.sendStatus(500)
@@ -150,8 +139,7 @@ router.delete('/product/:id', async (req, res) => {
 router.get('/products/theAmount', async (req, res) => {
     try {
         const theAmount = await Products.findAndCountAll();
-        res.statusCode = 200;
-        res.json(theAmount.count)
+        res.status(200).json(theAmount.count)
     } catch (err) {
         res.sendStatus(500)
     }
@@ -165,10 +153,8 @@ router.get('/products/lowerStock', async (req, res) => {
         if (stock == null) {
             res.sendStatus(404)
         } else {
-            res.statusCode = 200;
-            res.send(stock)
+            res.status(200).json(stock);
         }
-
     } catch (err) {
         res.sendStatus(500)
     }
@@ -182,8 +168,7 @@ router.get('/products/biggerStock', async (req, res) => {
         if (stock == null) {
             res.sendStatus(404)
         } else {
-            res.statusCode = 200;
-            res.send(stock)
+            res.status(200).json(stock);
         }
     } catch (err) {
         res.sendStatus(500)
@@ -197,13 +182,11 @@ router.get('/products/withoutStock', async (req, res) => {
         if(withoutStock == null || withoutStock.length == 0){
             res.sendStatus(404)
         }else{
-            res.statusCode = 200;
-            res.json(withoutStock)
+            res.status(200).json(withoutStock)
         }
     } catch (err) {
-        res.sendStatus(500)
+        res.sendStatus(500);
     }
-
 })
 
 module.exports = router
